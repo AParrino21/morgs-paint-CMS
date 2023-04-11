@@ -1,0 +1,10 @@
+.success {
+  color: white !important;
+  background-color: green !important;
+  font-weight: 800 !important;
+}
+.failed {
+  color: white !important;
+  background-color: red !important;
+  font-weight: 800 !important;
+}

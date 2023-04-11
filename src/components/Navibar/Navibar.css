@@ -1,0 +1,12 @@
+.navi-container {
+  display: flex !important;
+  justify-content: right !important;
+  align-items: center !important;
+  padding: 30px !important;
+}
+.linksContainer {
+  width: auto !important;
+}
+.links {
+  text-decoration: none !important;
+}

@@ -1,0 +1,18 @@
+.login-container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.buttonContainer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+}
+.loginPropeties {
+  margin-bottom: 20px !important;
+  width: 80% !important;
+  max-width: 300px !important;
+  text-align: center;
+}
