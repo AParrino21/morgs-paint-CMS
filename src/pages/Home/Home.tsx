@@ -11,17 +11,22 @@ import { Button } from "@mui/material";
 import OilModal from "../../components/OilModal/OilModal";
 import MixedModal from "../../components/MixedModal/MixedModal";
 import AddPaintingModal from "../../components/AddPaintingModal/AddPaintingModal";
+import Inquiries from "../../components/Inquiries/Inquiries";
 
 const Home = () => {
-  const { currentUser, getAllOils, oils, getAllMixedMedia, mixedmedia } =
+  const { currentUser, getAllOils, oils, getAllMixedMedia, mixedmedia,openTab, setOpenTab } =
     React.useContext(AuthContext);
 
-  const [openTab, setOpenTab] = React.useState<string>("oils");
+
   const [focusOil, setFocusOil] = React.useState<{
     color: string;
     font: string;
   }>({ color: "black", font: "20px" });
   const [focusMixed, setFocusMixed] = React.useState<{
+    color: string;
+    font: string;
+  }>({ color: "rgb(200, 200, 200)", font: "15px" });
+  const [focusInquiries, setFocusInquiries] = React.useState<{
     color: string;
     font: string;
   }>({ color: "rgb(200, 200, 200)", font: "15px" });
@@ -42,7 +47,9 @@ const Home = () => {
     getAllMixedMedia();
   }, []);
 
+  if (currentUser === undefined) return <div>Loading...</div>;
   if (!currentUser) return <Navigate to="/login" replace />;
+
   return (
     <div>
       <div>
@@ -51,6 +58,7 @@ const Home = () => {
             setOpenTab("oils");
             setFocusOil({ color: "black", font: "20px" });
             setFocusMixed({ color: "rgb(200, 200, 200)", font: "15px" });
+            setFocusInquiries({ color: "rgb(200, 200, 200)", font: "15px" });
           }}
           style={{ color: focusOil.color, fontSize: focusOil.font }}
         >
@@ -60,11 +68,23 @@ const Home = () => {
           onClick={() => {
             setOpenTab("mixed");
             setFocusOil({ color: "rgb(200, 200, 200)", font: "15px" });
+            setFocusInquiries({ color: "rgb(200, 200, 200)", font: "15px" });
             setFocusMixed({ color: "black", font: "20px" });
           }}
           style={{ color: focusMixed.color, fontSize: focusMixed.font }}
         >
           Mixed Media
+        </Button>
+        <Button
+          onClick={() => {
+            setOpenTab("inquiries");
+            setFocusOil({ color: "rgb(200, 200, 200)", font: "15px" });
+            setFocusMixed({ color: "rgb(200, 200, 200)", font: "15px" });
+            setFocusInquiries({ color: "black", font: "20px" });
+          }}
+          style={{ color: focusInquiries.color, fontSize: focusInquiries.font }}
+        >
+          Inquiries
         </Button>
       </div>
       {openTab === "oils" && (
@@ -86,6 +106,12 @@ const Home = () => {
             setOpenMixedModal={setOpenMixedModal}
             setAddNew={setAddNew}
           />
+        </div>
+      )}
+
+      {openTab === "inquiries" && (
+        <div>
+          <Inquiries />
         </div>
       )}
       <OilModal openOilModal={openOilModal} setOpenOilModal={setOpenOilModal} />

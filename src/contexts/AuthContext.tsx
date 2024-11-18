@@ -1,85 +1,14 @@
 import React from "react";
 import { auth } from "../firebase";
 import axios from "axios";
-
-interface OilsData {
-  _id: string;
-  cat: string;
-  description: string;
-  image: string;
-  inventory: number;
-  name: string;
-  price: number;
-  price_id: string;
-  size: string;
-}
-
-interface MixedMediaData {
-  _id: string;
-  cat: string;
-  bio: string;
-  src: string;
-  inventory: number;
-  name: string;
-  price: number;
-  price_id: string;
-  size: string;
-}
-
-interface NewOilsData {
-  _id?: string;
-  cat: string | undefined;
-  description: string | undefined;
-  image: string | undefined;
-  inventory: number | undefined;
-  name: string | undefined;
-  price: number | undefined;
-  price_id: string | undefined;
-  size: string | undefined;
-}
-
-interface NewMixedMediaData {
-  _id?: string;
-  cat: string | undefined;
-  bio: string | undefined;
-  src: string | undefined;
-  inventory: number | undefined;
-  name: string | undefined;
-  price: number | undefined;
-  price_id: string | undefined;
-  size: string | undefined;
-}
-
-interface AuthProviderProps {
-  currentUser: boolean;
-  login: (email: string, password: string) => void;
-  logout: () => void;
-  alertMessage: string;
-  alertStatus: string;
-  setAlert: (aStatus: string, aMessage: string) => void;
-  openAlert: boolean;
-  setOpenAlert: (open: boolean) => void;
-  getAllOils: () => void;
-  getOneOil: (id: string) => void;
-  getAllMixedMedia: () => void;
-  getOneMixedMedia: (id: string) => void;
-  oils: OilsData[] | undefined;
-  oneOil: OilsData | undefined;
-  mixedmedia: MixedMediaData[] | undefined;
-  oneMixedMedia: MixedMediaData | undefined;
-  setOneOil: (value: OilsData | undefined) => void;
-  setOneMixedMedia: (value: MixedMediaData | undefined) => void;
-  createNewPainting: (data: NewOilsData) => void;
-  updatePainting: (id: string, data: NewOilsData) => void;
-  createNewMixedMedia: (data: NewMixedMediaData) => void;
-  updateMixedMedia: (id: string, data: NewMixedMediaData) => void;
-  deleteMixedMedia: (id: string) => void;
-  deletePainting: (id: string) => void;
-}
-
-interface childrenProps {
-  children: React.ReactNode;
-}
+import {
+  AuthProviderProps,
+  childrenProps,
+  MixedMediaData,
+  NewMixedMediaData,
+  NewOilsData,
+  OilsData,
+} from "../types";
 
 export const AuthContext = React.createContext({} as AuthProviderProps);
 
@@ -94,6 +23,9 @@ export const AuthProvider = ({ children }: childrenProps) => {
   const [oneMixedMedia, setOneMixedMedia] = React.useState<
     MixedMediaData | undefined
   >(undefined);
+  const [commissionData, setCommissionData] = React.useState<any>();
+  const [imgUrl, setImgUrl] = React.useState<string>();
+  const [openTab, setOpenTab] = React.useState<string>("oils");
 
   const URL = import.meta.env.VITE_APP_SERVER_URL;
 
@@ -155,7 +87,7 @@ export const AuthProvider = ({ children }: childrenProps) => {
   const createNewPainting = async (data: NewOilsData) => {
     try {
       const response = await axios.post(URL + "/api/paintings/cms/oils", data);
-      getAllOils()
+      getAllOils();
     } catch (error) {
       console.log(error);
     }
@@ -167,7 +99,7 @@ export const AuthProvider = ({ children }: childrenProps) => {
         URL + "/api/paintings/cms/oils/" + id,
         data
       );
-      getAllOils()
+      getAllOils();
     } catch (error) {
       console.log(error);
     }
@@ -178,7 +110,7 @@ export const AuthProvider = ({ children }: childrenProps) => {
       const response = await axios.delete(
         URL + "/api/paintings/cms/oils/" + id
       );
-      getAllOils()
+      getAllOils();
     } catch (error) {
       console.log(error);
     }
@@ -187,7 +119,7 @@ export const AuthProvider = ({ children }: childrenProps) => {
   const createNewMixedMedia = async (data: NewMixedMediaData) => {
     try {
       const response = await axios.post(URL + "/api/paintings/cms/mixed", data);
-      getAllMixedMedia()
+      getAllMixedMedia();
     } catch (error) {
       console.log(error);
     }
@@ -199,7 +131,7 @@ export const AuthProvider = ({ children }: childrenProps) => {
         URL + "/api/paintings/cms/mixed/" + id,
         data
       );
-      getAllMixedMedia()
+      getAllMixedMedia();
     } catch (error) {
       console.log(error);
     }
@@ -210,7 +142,7 @@ export const AuthProvider = ({ children }: childrenProps) => {
       const response = await axios.delete(
         URL + "/api/paintings/cms/mixed/" + id
       );
-      getAllMixedMedia()
+      getAllMixedMedia();
     } catch (error) {
       console.log(error);
     }
@@ -225,6 +157,36 @@ export const AuthProvider = ({ children }: childrenProps) => {
     });
     return unsubscribe;
   }, []);
+
+  const getWeddingClientData = async () => {
+    try {
+      const response = await axios.get(
+        URL + "/api/paintings/cms/getWeddingCommissions/"
+      );
+      setCommissionData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  React.useEffect(() => {
+    getWeddingClientData();
+  }, []);
+
+  const getImageUrl = async (client: {
+    firstName: string | undefined;
+    lastName: string | undefined;
+  }) => {
+    try {
+      const response = await axios.post(
+        URL + "/api/paintings/cms/getWeddingImg/",
+        client
+      );
+      setImgUrl(response.data.url);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <AuthContext.Provider
@@ -253,6 +215,11 @@ export const AuthProvider = ({ children }: childrenProps) => {
         updateMixedMedia,
         deletePainting,
         deleteMixedMedia,
+        commissionData,
+        getImageUrl,
+        imgUrl,
+        openTab,
+        setOpenTab,
       }}
     >
       {children}
