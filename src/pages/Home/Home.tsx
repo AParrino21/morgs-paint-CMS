@@ -41,11 +41,22 @@ const Home = () => {
     oil: false,
     mixed: false,
   });
+  const currentURL = window.location.href
+  const backUrl = window.location.href.split("#")[0];
 
   React.useEffect(() => {
     getAllOils();
     getAllMixedMedia();
   }, []);
+
+  React.useEffect(() => {
+    if (currentURL.includes('#')) {
+      setOpenTab("inquiries")
+      setFocusOil({ color: "rgb(200, 200, 200)", font: "15px" });
+      setFocusMixed({ color: "rgb(200, 200, 200)", font: "15px" });
+      setFocusInquiries({ color: "black", font: "20px" });
+    }
+  },[])
 
   if (currentUser === undefined) return <div>Loading...</div>;
   if (!currentUser) return <Navigate to="/login" replace />;
@@ -59,6 +70,7 @@ const Home = () => {
             setFocusOil({ color: "black", font: "20px" });
             setFocusMixed({ color: "rgb(200, 200, 200)", font: "15px" });
             setFocusInquiries({ color: "rgb(200, 200, 200)", font: "15px" });
+            window.history.pushState({}, "", backUrl);
           }}
           style={{ color: focusOil.color, fontSize: focusOil.font }}
         >
@@ -70,6 +82,7 @@ const Home = () => {
             setFocusOil({ color: "rgb(200, 200, 200)", font: "15px" });
             setFocusInquiries({ color: "rgb(200, 200, 200)", font: "15px" });
             setFocusMixed({ color: "black", font: "20px" });
+            window.history.pushState({}, "", backUrl);
           }}
           style={{ color: focusMixed.color, fontSize: focusMixed.font }}
         >

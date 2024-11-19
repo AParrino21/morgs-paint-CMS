@@ -216,10 +216,12 @@ export const AuthProvider = ({ children }: childrenProps) => {
         deletePainting,
         deleteMixedMedia,
         commissionData,
+        setCommissionData,
         getImageUrl,
         imgUrl,
         openTab,
         setOpenTab,
+        setImgUrl
       }}
     >
       {children}

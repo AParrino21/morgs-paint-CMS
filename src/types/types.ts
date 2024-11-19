@@ -92,10 +92,12 @@ export interface AuthProviderProps {
   deleteMixedMedia: (id: string) => void;
   deletePainting: (id: string) => void;
   commissionData: any;
+  setCommissionData: (data: any) => void;
   getImageUrl: (client: { firstName: string; lastName: string }) => void;
   imgUrl: string | undefined;
   openTab: string; 
   setOpenTab: (tab: string) => void;
+  setImgUrl: (image:any | null) => void; 
 }
 
 export interface childrenProps {

@@ -33,7 +33,7 @@ const Inquiries = () => {
   const { classes } = useStyles();
   const { commissionData, getImageUrl } = React.useContext(AuthContext);
   const [currentPage, setCurrentPage] = React.useState<number | null>(null);
-  const [clickedUser, setClickedUser] = React.useState<InquiriesData | null>(
+  const [clickedUser, setClickedUser] = React.useState<any>(
     null
   );
 
@@ -47,6 +47,10 @@ const Inquiries = () => {
     const currentCard = commissionData?.filter(
       (i: any) => i.id === numberAfterHash.toString()
     );
+    if (!currentCard) {
+      const backUrl = window.location.href.split("#")[0];
+      window.history.pushState({}, "", backUrl);
+    }
     setClickedUser(currentCard[0]);
     if (isNaN(numberAfterHash) || !numberAfterHash) {
       setCurrentPage(null);
@@ -79,9 +83,9 @@ const Inquiries = () => {
             <p style={{ fontSize: "30px", color: "white" }}>Clients</p>
           </div>
           <Divider />
-          {commissionData[0] === "No Clients" ? (
+          {!commissionData || commissionData[0] === "No Clients" ? (
             <div style={{ textAlign: "center", padding: "30px" }}>
-              <p style={{ fontSize: "25px" }}>{commissionData[0]}</p>
+              <p style={{ fontSize: "25px" }}>No Clients</p>
             </div>
           ) : (
             commissionData?.map((i: any) => (

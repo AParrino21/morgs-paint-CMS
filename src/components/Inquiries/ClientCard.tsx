@@ -26,7 +26,7 @@ export interface ClientCardProps {
   currentPage: number | null;
   setCurrentPage: (page: number | null) => void;
   clickedUser: InquiriesData | null;
-  setClickedUser: (user: InquiriesData | null) => void;
+  setClickedUser: (user: any | null) => void;
 }
 
 const ClientCard: React.FC<ClientCardProps> = ({
@@ -36,7 +36,8 @@ const ClientCard: React.FC<ClientCardProps> = ({
   setClickedUser,
 }) => {
   const { classes } = useStyles();
-  const { commissionData, imgUrl, getImageUrl } = React.useContext(AuthContext);
+  const { commissionData, setCommissionData, imgUrl, getImageUrl, setImgUrl } =
+    React.useContext(AuthContext);
   const URL = import.meta.env.VITE_APP_SERVER_URL;
 
   React.useEffect(() => {
@@ -63,6 +64,7 @@ const ClientCard: React.FC<ClientCardProps> = ({
     const backUrl = window.location.href.split("#")[0];
     setCurrentPage(null);
     setClickedUser(null);
+    setImgUrl(null);
     window.history.pushState({}, "", backUrl);
   }
 
@@ -72,6 +74,27 @@ const ClientCard: React.FC<ClientCardProps> = ({
         URL + "/api/paintings/cms/updateTaskStatus/",
         statusObj
       );
+      if (statusObj.status === "open") {
+        setClickedUser((prevState: any) => ({
+          ...prevState,
+          complete: false,
+        }));
+        setCommissionData((prevItems: any) =>
+          prevItems.map((item: any) =>
+            item.id === statusObj.id ? { ...item, complete: false } : item
+          )
+        );
+      } else {
+        setClickedUser((prevState: any) => ({
+          ...prevState,
+          complete: true,
+        }));
+        setCommissionData((prevItems: any) =>
+          prevItems.map((item: any) =>
+            item.id === statusObj.id ? { ...item, complete: true } : item
+          )
+        );
+      }
       return response;
     } catch (error) {
       console.log(error);
